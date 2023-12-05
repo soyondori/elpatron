@@ -1,6 +1,16 @@
 import * as paper from 'paper'
 
-export const createGrid = (corner: paper.Point, size: paper.Size, cols: number) => {
+export interface Tile {
+  rectangle: paper.Rectangle
+  col: number
+  row: number
+}
+
+export interface Grid {
+  tiles: Array<Array<Tile>>
+}
+
+export const createGrid = (corner: paper.Point, size: paper.Size, cols: number): Grid => {
   const colSize = size.width / cols
   const rows = cols
 
@@ -9,14 +19,20 @@ export const createGrid = (corner: paper.Point, size: paper.Size, cols: number) 
     colSize
   )
 
-  const tiles = []
+  const tiles: Array<Array<Tile>> = []
 
-  for(let col = 0; col < cols; col++) {
-    for(let row = 0; row < rows; row++) {
+  for(let row = 0; row < rows; row++) {
+    tiles.push([])
+
+    for(let col = 0; col < cols; col++) {
       const tilePoint = corner.add([col * colSize, row * colSize])
-      tiles.push(new paper.Rectangle(tilePoint, tileSize))
+      tiles[row].push({
+        rectangle: new paper.Rectangle(tilePoint, tileSize),
+        row,
+        col
+      })
     }
   }
 
-  return tiles
+  return { tiles }
 }
