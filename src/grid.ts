@@ -2,15 +2,22 @@ import * as paper from 'paper'
 
 export interface Tile {
   rectangle: paper.Rectangle
-  col: number
-  row: number
+  gridPosition: paper.Point
 }
 
 export interface Grid {
   tiles: Array<Array<Tile>>
+  rows: number,
+  cols: number
 }
 
-export const createGrid = (corner: paper.Point, size: paper.Size, cols: number): Grid => {
+export interface GridParams {
+  corner: paper.Point,
+  size: paper.Size,
+  cols: number
+}
+
+export const createGrid = ({corner, size, cols}: GridParams): Grid => {
   const colSize = size.width / cols
   const rows = cols
 
@@ -21,18 +28,17 @@ export const createGrid = (corner: paper.Point, size: paper.Size, cols: number):
 
   const tiles: Array<Array<Tile>> = []
 
-  for(let row = 0; row < rows; row++) {
+  for(let col = 0; col < cols; col++) {
     tiles.push([])
 
-    for(let col = 0; col < cols; col++) {
+    for(let row = 0; row < rows; row++) {
       const tilePoint = corner.add([col * colSize, row * colSize])
-      tiles[row].push({
+      tiles[col].push({
         rectangle: new paper.Rectangle(tilePoint, tileSize),
-        row,
-        col
+        gridPosition: new paper.Point(col, row)
       })
     }
   }
 
-  return { tiles }
+  return { tiles, rows, cols }
 }
